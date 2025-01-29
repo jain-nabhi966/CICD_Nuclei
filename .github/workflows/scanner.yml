@@ -34,7 +34,7 @@ jobs:
       - name: Install Nuclei
         run: |
           wget $RELEASE_URL
-          tar -zxvf nuclei_*.tar.gz
+          unzip nuclei_*.zip
           sudo mv nuclei /usr/local/bin/
 
       # Step 5: Download Nuclei Templates
