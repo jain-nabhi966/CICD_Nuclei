@@ -1,55 +1,47 @@
-name: Nuclei CI/CD Scan
+name: Nuclei Security Scan
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main  # Adjust the branch name if needed
 
 jobs:
   nuclei-scan:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # Step 1: Checkout the repository
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      # Step 2: Set up Go environment for Nuclei
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: '1.20'
+    # Step 2: Set up the environment
+    - name: Set up Python (if needed for your templates)
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-      # Step 3: Get the latest release version of Nuclei using GitHub API
-      - name: Get Latest Nuclei Release
-        id: nuclei-release
-        run: |
-          RELEASE_URL=$(curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest | jq -r '.assets[] | select(.name | test("linux_amd64")) | .browser_download_url')
-          echo "RELEASE_URL=$RELEASE_URL" >> $GITHUB_ENV
+    # Step 3: Install dependencies (e.g., unzip if not installed by default)
+    - name: Install dependencies
+      run: sudo apt-get install -y unzip
 
-      # Step 4: Download and install Nuclei
-      - name: Install Nuclei
-        run: |
-          wget $RELEASE_URL
-          unzip nuclei_*.zip
-          sudo mv nuclei /usr/local/bin/
+    # Step 4: Download and install Nuclei
+    - name: Download and Install Nuclei
+      run: |
+        wget https://github.com/projectdiscovery/nuclei/releases/download/v3.3.8/nuclei_3.3.8_linux_amd64.zip
+        unzip nuclei_3.3.8_linux_amd64.zip
+        sudo mv nuclei /usr/local/bin/
 
-      # Step 5: Download Nuclei Templates
-      - name: Download Nuclei Templates
-        run: |
-          git clone https://github.com/projectdiscovery/nuclei-templates.git /tmp/nuclei-templates
+    # Step 5: Run Nuclei Scan
+    - name: Run Nuclei Scan
+      run: |
+        mkdir -p results  # Create the results directory if it doesn't exist
+        nuclei -t /tmp/nuclei-templates/ -u https://www.lendbox.in -o results/nuclei-results.txt
 
-      # Step 6: Run Nuclei Scan
-      - name: Run Nuclei Scan
-        run: |
-          nuclei -t /tmp/nuclei-templates/ -u https://www.lendbox.in
-
-      # Optional: Save the scan results as an artifact
-      - name: Save Nuclei Scan Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: nuclei-scan-results
-          path: nuclei-results.txt
+    # Step 6: Save Nuclei Scan Results as an artifact
+    - name: Save Nuclei Scan Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: nuclei-scan-results
+        path: results/nuclei-results.txt
+        if-no-files-found: warn
+        include-hidden-files: false
