@@ -1,0 +1,36 @@
+[cookies-without-httponly] [javascript] [info] www.lendbox.in ["i18n_redirected"]
+[cookies-without-secure] [javascript] [info] www.lendbox.in ["i18n_redirected"]
+[missing-sri] [http] [info] https://www.lendbox.in ["https://crmplus.zoho.com/crm/javascript/zcga.js","https://fonts.googleapis.com/css?family=Mulish:400,500,600,700,800|Roboto+Slab|Roboto:400,500,700|Material+Icons&display=swap"]
+[waf-detect:cloudflare] [http] [info] https://www.lendbox.in
+[deprecated-tls:tls_1.1] [ssl] [info] www.lendbox.in:443 ["tls11"]
+[tls-version] [ssl] [info] www.lendbox.in:443 ["tls10"]
+[deprecated-tls:tls_1.0] [ssl] [info] www.lendbox.in:443 ["tls10"]
+[weak-cipher-suites:tls-1.0] [ssl] [low] www.lendbox.in:443 ["[tls10 TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA]"]
+[tls-version] [ssl] [info] www.lendbox.in:443 ["tls11"]
+[weak-cipher-suites:tls-1.1] [ssl] [low] www.lendbox.in:443 ["[tls11 TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA]"]
+[tls-version] [ssl] [info] www.lendbox.in:443 ["tls12"]
+[tls-version] [ssl] [info] www.lendbox.in:443 ["tls13"]
+[robots-txt-endpoint] [http] [info] https://www.lendbox.in/robots.txt
+[http-missing-security-headers:cross-origin-opener-policy] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:strict-transport-security] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:x-content-type-options] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:x-permitted-cross-domain-policies] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:referrer-policy] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:cross-origin-embedder-policy] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:content-security-policy] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:permissions-policy] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:clear-site-data] [http] [info] https://www.lendbox.in
+[http-missing-security-headers:cross-origin-resource-policy] [http] [info] https://www.lendbox.in
+[readme-md] [http] [info] https://www.lendbox.in/README.md
+[form-detection] [http] [info] https://www.lendbox.in
+[fingerprinthub-web-fingerprints:netflow-analyzer-zoho-traffic-management] [http] [info] https://www.lendbox.in
+[tech-detect:google-font-api] [http] [info] https://www.lendbox.in
+[tech-detect:cloudflare] [http] [info] https://www.lendbox.in
+[tech-detect:nuxt.js] [http] [info] https://www.lendbox.in
+[tech-detect:vue.js] [http] [info] https://www.lendbox.in
+[tech-detect:google-tag-manager] [http] [info] https://www.lendbox.in
+[soa-detect:cloudflare] [dns] [info] www.lendbox.in
+[caa-fingerprint] [dns] [info] www.lendbox.in
+[ssl-issuer] [ssl] [info] www.lendbox.in:443 ["Google Trust Services"]
+[ssl-dns-names] [ssl] [info] www.lendbox.in:443 ["lendbox.in","*.lendbox.in"]
+[wildcard-tls] [ssl] [info] www.lendbox.in:443 ["CN: lendbox.in","SAN: [lendbox.in *.lendbox.in]"]
