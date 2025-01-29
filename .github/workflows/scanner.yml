@@ -3,61 +3,45 @@ name: Nuclei Security Scan
 on:
   push:
     branches:
-      - main  # Adjust the branch name if needed
+      - main  # Adjust if needed
+
+permissions:
+  contents: write  # ✅ Grants write permission for committing changes
 
 jobs:
   nuclei-scan:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository
     - name: Checkout Repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    # Step 2: Set up Python (if needed for your templates)
-    - name: Set up Python (if templates require it)
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-
-    # Step 3: Install dependencies
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y unzip git
 
-    # Step 4: Download and Install Nuclei
     - name: Download and Install Nuclei
       run: |
         wget https://github.com/projectdiscovery/nuclei/releases/download/v3.3.8/nuclei_3.3.8_linux_amd64.zip
         unzip nuclei_3.3.8_linux_amd64.zip
         sudo mv nuclei /usr/local/bin/
 
-    # Step 5: Download Nuclei Templates
     - name: Download Nuclei Templates
       run: |
         git clone https://github.com/projectdiscovery/nuclei-templates.git /tmp/nuclei-templates
 
-    # Step 6: Run Nuclei Scan
     - name: Run Nuclei Scan
       run: |
-        mkdir -p results  # Create the results directory if it doesn't exist
+        mkdir -p results
         nuclei -t /tmp/nuclei-templates/ -u https://www.lendbox.in -o results/nuclei-results.txt
 
-    # Step 7: Commit the Results to the Repository
-    - name: Commit Scan Results
+    - name: Commit and Push Scan Results
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add results/nuclei-results.txt
         git commit -m "Add Nuclei scan results"
-        git push origin main  # You can change the branch if needed
-
-    # Step 8: (Optional) Save Nuclei Scan Results as an artifact
-    - name: Save Nuclei Scan Results as an artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: nuclei-scan-results
-        path: results/nuclei-results.txt
-        if-no-files-found: warn
-        include-hidden-files: false
+        git push origin main  # Push results back to the repository
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_SECRET }}  # ✅ Uses GitHub token with write permissions
