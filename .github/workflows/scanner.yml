@@ -14,30 +14,37 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    # Step 2: Set up the environment
-    - name: Set up Python (if needed for your templates)
+    # Step 2: Set up Python (if needed for your templates)
+    - name: Set up Python (if templates require it)
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
-    # Step 3: Install dependencies (e.g., unzip if not installed by default)
+    # Step 3: Install dependencies
     - name: Install dependencies
-      run: sudo apt-get install -y unzip
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y unzip git
 
-    # Step 4: Download and install Nuclei
+    # Step 4: Download and Install Nuclei
     - name: Download and Install Nuclei
       run: |
         wget https://github.com/projectdiscovery/nuclei/releases/download/v3.3.8/nuclei_3.3.8_linux_amd64.zip
         unzip nuclei_3.3.8_linux_amd64.zip
         sudo mv nuclei /usr/local/bin/
 
-    # Step 5: Run Nuclei Scan
+    # Step 5: Download Nuclei Templates
+    - name: Download Nuclei Templates
+      run: |
+        git clone https://github.com/projectdiscovery/nuclei-templates.git /tmp/nuclei-templates
+
+    # Step 6: Run Nuclei Scan
     - name: Run Nuclei Scan
       run: |
         mkdir -p results  # Create the results directory if it doesn't exist
         nuclei -t /tmp/nuclei-templates/ -u https://www.lendbox.in -o results/nuclei-results.txt
 
-    # Step 6: Save Nuclei Scan Results as an artifact
+    # Step 7: Save Nuclei Scan Results as an artifact
     - name: Save Nuclei Scan Results
       uses: actions/upload-artifact@v3
       with:
