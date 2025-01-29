@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository (even though there's no code, it's needed for the actions)
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -23,19 +23,26 @@ jobs:
         with:
           go-version: '1.20'
 
-      # Step 3: Install Nuclei
+      # Step 3: Get the latest release version of Nuclei using GitHub API
+      - name: Get Latest Nuclei Release
+        id: nuclei-release
+        run: |
+          RELEASE_URL=$(curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest | jq -r '.assets[] | select(.name | test("linux_amd64")) | .browser_download_url')
+          echo "RELEASE_URL=$RELEASE_URL" >> $GITHUB_ENV
+
+      # Step 4: Download and install Nuclei
       - name: Install Nuclei
         run: |
-          wget https://github.com/projectdiscovery/nuclei/releases/download/v3.3.8/nuclei_3.3.8_linux_amd64.tar.gz
-          tar -zxvf nuclei_3.3.8_linux_amd64.tar.gz
+          wget $RELEASE_URL
+          tar -zxvf nuclei_*.tar.gz
           sudo mv nuclei /usr/local/bin/
 
-      # Step 4: Download Nuclei Templates
+      # Step 5: Download Nuclei Templates
       - name: Download Nuclei Templates
         run: |
           git clone https://github.com/projectdiscovery/nuclei-templates.git /tmp/nuclei-templates
 
-      # Step 5: Run Nuclei Scan
+      # Step 6: Run Nuclei Scan
       - name: Run Nuclei Scan
         run: |
           nuclei -t /tmp/nuclei-templates/ -u https://www.lendbox.in
