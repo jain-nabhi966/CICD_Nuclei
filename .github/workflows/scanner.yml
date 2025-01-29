@@ -1,0 +1,48 @@
+name: Nuclei CI/CD Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  nuclei-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository (even though there's no code, it's needed for the actions)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Go environment for Nuclei
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.20'
+
+      # Step 3: Install Nuclei
+      - name: Install Nuclei
+        run: |
+          wget https://github.com/projectdiscovery/nuclei/releases/download/v2.7.3/nuclei_2.7.3_linux_amd64.tar.gz
+          tar -zxvf nuclei_2.7.3_linux_amd64.tar.gz
+          sudo mv nuclei /usr/local/bin/
+
+      # Step 4: Download Nuclei Templates
+      - name: Download Nuclei Templates
+        run: |
+          git clone https://github.com/projectdiscovery/nuclei-templates.git /tmp/nuclei-templates
+
+      # Step 5: Run Nuclei Scan
+      - name: Run Nuclei Scan
+        run: |
+          nuclei -t /tmp/nuclei-templates/ -u https://www.lendbox.in
+
+      # Optional: Save the scan results as an artifact
+      - name: Save Nuclei Scan Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: nuclei-scan-results
+          path: nuclei-results.txt
