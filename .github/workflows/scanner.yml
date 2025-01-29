@@ -26,7 +26,7 @@ jobs:
       # Step 3: Install Nuclei
       - name: Install Nuclei
         run: |
-          wget https://github.com/projectdiscovery/nuclei/releases/download/v2.7.3/nuclei_2.7.3_linux_amd64.tar.gz
+          wget https://github.com/projectdiscovery/nuclei/releases/download/v3.3.8/nuclei_3.3.8_linux_amd64.tar.gz
           tar -zxvf nuclei_2.7.3_linux_amd64.tar.gz
           sudo mv nuclei /usr/local/bin/
 
