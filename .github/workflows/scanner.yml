@@ -44,8 +44,17 @@ jobs:
         mkdir -p results  # Create the results directory if it doesn't exist
         nuclei -t /tmp/nuclei-templates/ -u https://www.lendbox.in -o results/nuclei-results.txt
 
-    # Step 7: Save Nuclei Scan Results as an artifact
-    - name: Save Nuclei Scan Results
+    # Step 7: Commit the Results to the Repository
+    - name: Commit Scan Results
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add results/nuclei-results.txt
+        git commit -m "Add Nuclei scan results"
+        git push origin main  # You can change the branch if needed
+
+    # Step 8: (Optional) Save Nuclei Scan Results as an artifact
+    - name: Save Nuclei Scan Results as an artifact
       uses: actions/upload-artifact@v3
       with:
         name: nuclei-scan-results
